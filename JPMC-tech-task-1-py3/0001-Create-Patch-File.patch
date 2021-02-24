@@ -1,0 +1,142 @@
+From 78ac4ccd5c432615464f65c3d5e4675b420ec334 Mon Sep 17 00:00:00 2001
+From: Jason Guzman <jguzma48@depaul.edu>
+Date: Fri, 22 Jan 2021 18:47:41 -0600
+Subject: [PATCH] Create Patch File
+
+---
+ .vscode/settings.json              |   3 +++
+ __pycache__/client3.cpython-37.pyc | Bin 0 -> 1126 bytes
+ client3.py                         |  11 ++++++++---
+ client3.pyc                        | Bin 0 -> 1439 bytes
+ client_test.py                     |   7 ++++---
+ 5 files changed, 15 insertions(+), 6 deletions(-)
+ create mode 100644 .vscode/settings.json
+ create mode 100644 __pycache__/client3.cpython-37.pyc
+ create mode 100644 client3.pyc
+
+diff --git a/.vscode/settings.json b/.vscode/settings.json
+new file mode 100644
+index 0000000..615aafb
+--- /dev/null
++++ b/.vscode/settings.json
+@@ -0,0 +1,3 @@
++{
++    "python.pythonPath": "/usr/bin/python3"
++}
+\ No newline at end of file
+diff --git a/__pycache__/client3.cpython-37.pyc b/__pycache__/client3.cpython-37.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..e387df36f79c55ce22b04fb6d97f12b3228dee93
+GIT binary patch
+literal 1126
+zcmYjQ&2QX96rZujUhif%lzcC}3`iBMM7lw}M4>=wQjm~{(pFW~5y&{6w~4!6+nJd~
+z&ElMvBY(u^$c?{*1IM{?>YWoOo@bMa8NIKW=Qr>D-t*&LuS0ObXyvCr+JyYw7`F>;
+z@(4-)g-jAjb0Vmdp75OXh3_O2OnM@az6d3g!LLNLWGGuGBWTNL?5RKB{01FZfpAXe
+z^oaaei!S(!9?;jTi}xT{+yS;=*W{XB)5ZIZ6l)m~>u>g94ZZio2DD&fPJduxQ*4QC
+zu>(7>4x0}N^ko}1VGFilXT-M1oKkX8ziiGs5W%`!=@aDLKAC$rx5qEBmgi*9dy93E
+z<JpJj##9HxVP2+5eqL&Gu)nvzH@ujFy8J4WU;J{F{X+>!k=zQ9Go(W#{Rml&@%rS7
+znnv^bMEdv|z4DyR-r0Wb)&4e-!Ci92YT8&e8!^lzoE`8JRmy1!Jjrujj<`7oUI0jt
+z{O2T}g65{=XHbAj3_5X{n4~JR!f+dCQ>J6vGG!H?X3_?g%2HU`i5|c8FvS72!6+{i
+zGYD*OF)a<K=GeCJgLvuRM&G5Xn(BThY6Zo=pATPXP<p7VvK(KgiLMegJOVw&=Z4>%
+ze1EuWAU)qT`1S5*yVd1`VVY-9m<RW(OWQpIbA*|mxJ)secH`zp^bYPWRXsdQn@pP3
+z$c7xS8>rM&QXHPH^qwQMHN8s^EPwV9{}v2KAhNQ7%B3GCJSpUje#%wTtYcTfz!R+-
+zms{o3T`XA_9c_epK5OC)(9$6?!Xl4Rwd!u;c#>pA9M3*}+CV4yJ<SutKSA&g?&(iC
+z*6yTx2DQN~a?#Mw`d>djwEoePZw4QT)v3z!?DW0@94>7{xU?-Z*#rc8t;<4$3hO8*
+zB6#}Z$+K6M9y^TQB~m04h-1q#?4S+M_Y5qJZGgR%TC{E>w=i;9L1DvDsV0fBOhF=T
+z=vuEu=rYwR!t&f8sOD!^O><oH-3%4xe=s$(pq5xYoZzJ9@Z}~RX^t$SZu`t<Uet~{
+Qk-tW{&u9mG9MK)`KeQ+wYybcN
+
+literal 0
+HcmV?d00001
+
+diff --git a/client3.py b/client3.py
+index f1771c3..ad494df 100644
+--- a/client3.py
++++ b/client3.py
+@@ -35,14 +35,17 @@ def getDataPoint(quote):
+ 	stock = quote['stock']
+ 	bid_price = float(quote['top_bid']['price'])
+ 	ask_price = float(quote['top_ask']['price'])
+-	price = bid_price
++	price =  (bid_price+ask_price) / 2
+ 	return stock, bid_price, ask_price, price
+ 
+ def getRatio(price_a, price_b):
+ 	""" Get ratio of price_a and price_b """
+ 	""" ------------- Update this function ------------- """
+ 	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++	if(price_b == 0):
++		#Breaks to prevent ZeroDivisionError
++		return
++	return price_a / price_b
+ 
+ # Main
+ if __name__ == "__main__":
+@@ -52,8 +55,10 @@ if __name__ == "__main__":
+ 		quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
+ 
+ 		""" ----------- Update to get the ratio --------------- """
++		prices = {}
+ 		for quote in quotes:
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
++			prices[stock] = price
+ 			print ("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
+ 
+-		print ("Ratio %s" % getRatio(price, price))
++		print ("Ratio %s" % (getRatio(prices["ABC"], prices["DEF"])))
+diff --git a/client3.pyc b/client3.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..3ed3c7e270fb7d07e5638a70263341231489d615
+GIT binary patch
+literal 1439
+zcmb_bUvJws5I;(aQ#(%DC2<nJu>*>!z*1-EOOdtfwj^yaph4=OC@OT&81dZ5mPJLR
+zhX!??vd^*4u$O(Z?R~wY?XKwSCW*(p<NfDP;a{sQ9IX73!TedK{d-z=O8{v41QY;?
+zSnvTP!GaGV2^V|>Nd%fsmq3%g0Xl-;$Z;9;l4ouJHbFOF6hOT$-u(&K0$c%Xz_sA-
+z@aNwlX#<8ZTm=*`T!Z0Fz$F;o0*qi7!8OcHhhNP3WF2zKu>tRn0M{wRBS<y@mjO4~
+z^bHl&fn*DkZAf+i>DvJ8z(Y+I9l$NXZPpGV*n0Zx;tzPGsY?1bKsTYwTMN3^fj=F?
+ztJ06-G+v?k<p0ofY;O~L?p(Fs>lG$b#ksL=|H0maz23zH>&wTve)Rq-|C?r+(Sjvf
+z5v>DS_JqjPhwNSna5Eu*F3qn?)n5e*UG%RmglPcN5VmQmovR3@Vy>7*+{S6#;K=(#
+z<VkJxBtxl+LYjee=O{}=javSyiV0fjjC_kF*2<BQ)XJ&K<fW62tF+E!BgbfPrb^Fp
+z?X^{%XZTU8>?jY&BIefo`Jgb$#q96Ji-~dACkb4W2t`R}5m+Mcnbh|&*eYgXza`Rp
+zX|c9FTNyLD%#^KE-8)1(qGEbKojgC-b(o#+I*PIT&2Dvhzn2v`mhS$&>e98z|1G*h
+zYUso_#6ep`AZ&?Ede=n8DHqFM#ttcHm;`qQ=q-lwDP0b!I;U|+hxSV%@+mq=1IrDM
+z)c2AqsY*TP&m`dy;Mg}3a{@oCx#1`L+025C|8u`LC<yi2=d$i{K*j(>?I044&(d_P
+z@-j{BS0udPE79_fmCDJOZe;(C{aVr-{q74T?yhA=ACXKQ_y5C>2Yx?1dJ=a@c56f?
+zby4JJ_i7}xTjx0OOywBmE+3<3hSrq+u%=O&vB$=Xmq-2Aj*)ZR_sRILn%7&ZF{Y_^
+z%^lX>o?NL(wokoGNYmC&bdjCGO4&_CK;TLSrXDNjqtvLh*Lg%*&-z|%pTX)O+Gn3W
+w2l)(;F{%EaTY5OAU$VgOIvh|EX$${`jj$0ko6S}`?25gxAy&nXXo+s{0qQh1_5c6?
+
+literal 0
+HcmV?d00001
+
+diff --git a/client_test.py b/client_test.py
+index af2bf26..1c684a4 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -8,6 +8,8 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote["stock"], quote["top_bid"]["price"], quote["top_ask"]["price"], (quote["top_bid"]["price"]+ quote["top_ask"]["price"])/2))
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+@@ -15,11 +17,10 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
+-
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote["stock"], quote["top_bid"]["price"], quote["top_ask"]["price"], (quote["top_bid"]["price"]+ quote["top_ask"]["price"])/2))
+ 
+   """ ------------ Add more unit tests ------------ """
+ 
+-
+-
+ if __name__ == '__main__':
+     unittest.main()
+-- 
+2.24.3 (Apple Git-128)
+
